@@ -1,4 +1,6 @@
-from scrapyProject.store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage
+import requests
+
+from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage
 
 
 def create_competitor(comperitor_name, url):
@@ -27,3 +29,14 @@ def create_product(product_name, product_title, product_description, product_in_
 
 def create_variant(product, **kwargs):
     pass
+
+
+def get_response(url):
+    response = ''
+    try:
+        print("loading...-->  {0}", url)
+        response = requests.get(url)
+    except Exception as e:
+        print("could not connect to -->  {0}", url)
+    finally:
+        return response
