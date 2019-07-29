@@ -29,45 +29,14 @@ def load_essentra_products():
 
                 for product_url in product_urls:
                     response = get_response(product_url)
-                    variant_urls, product_name, product_title, product_description, product_in_stock = get_pdoduct_info(response)
-                    product = create_product(product_name, product_title, product_description, product_in_stock, product_type=product_type_3)
+                    variant_urls, product_name, product_title, product_description, product_images, product_stock_status = get_pdoduct_info(response)
+                    product = create_product(product_name, product_title, product_description, product_images, product_stock_status, product_type=product_type_3)
 
                     for variant_url in variant_urls:
                         response = get_response(variant_url)
                         variant_info = get_variant_info(response)
                         variant = create_variant(product, **variant_info)
 
-    response = requests.get(base_url)
-    html_page = response.text
-    page_soup = soup(html_page, 'html.parser')
-
-    categories_level_2 = page_soup.find_all("div", {"class": "row category-wrapper has-margin-top"})
-
-    counter = 1
-
-    for category in categories_level_2:
-        # pdb.set_trace()
-        product_name = category.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}).a.text.strip()
-        product_link = category.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}).a['href']
-        product_link = product_link
-
-        # product_short_description = container.find("div", {"class":"content"}).text.strip()
-        # product_image =  container.find("div", {"class":"fullimage"}).img['src']
-        # product_stock_staus = container.find("div", {"class":"span2 extro"}).p.text.strip()
-        # number_of_sub_products_string = container.find("a", {"class":"itemVarBtn"}).span.text.strip()
-        # number_of_sub_products = int(''.join(filter(str.isdigit, str(number_of_sub_products_string))))
-
-        print(counter)
-        print(product_name)
-        print(product_link)
-        # print(product_short_description)
-        # print(product_image)
-        # print(product_stock_staus)
-        # print(number_of_sub_products)
-        counter += 1
-
-        # f.write(product_name + ", "+ product_short_description +", "+ product_image +", "+ product_stock_staus +", " + str(number_of_sub_products) +"\n")
-    # f.close()
 
 def get_soup(response):
     html_page = response.text
@@ -77,31 +46,94 @@ def get_soup(response):
 
 def get_product_type_1_name_image_description(response):
     soup = get_soup(response)
-    name = soup.find("div", {"class": "container container-with-padding"}).h1.text
-    image = ''
-    description = ''
-    link_divs = soup.find_all("div", {"class": "row category-wrapper has-margin-top"})
-    links = []
-    for div in link_divs:
-        link = base_url + div.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}).a['href']
-        links.append(link)
+    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text
+    type_image = ''
+    type_description = ''
+    sub_type_link_divs = soup.find_all("div", {"class": "row category-wrapper has-margin-top"})
+    sub_type_links = []
+    for link_div in sub_type_link_divs:
+        link = base_url + link_div.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}).a['href']
+        sub_type_links.append(link)
 
-    return links, name, image, description
+    return sub_type_links, type_name, type_image, type_description
 
 
 def get_product_type_2_name_image_description(response):
-    return [], 2, 3, 4
+    soup = get_soup(response)
+    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text
+    type_image = soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).img['src']
+    type_description = soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).span.text
+    sub_type_link_divs = soup.find("div", {"class": "col-lg-8 category-items"}).find_all("li", {"class": "col-6 category-item"})
+    sub_type_links = []
+    for li in sub_type_link_divs:
+        link = base_url + li.a['href'] + '?pageSize=All'
+        sub_type_links.append(link)
+    return sub_type_links, type_name, type_image, type_description
 
 
 def get_product_type_3_name_image_description(response):
-    return [], 2, 3, 4
+    soup = get_soup(response)
+    type_name = soup.find("div", {"class": "container container-with-padding shop-page"}).h1.text
+    type_image = ''
+    type_description = ''
+    product_link_divs = soup.find_all("div", {"class": "product-wrapper"})
+    product_links = []
+    for div in product_link_divs:
+        product_link = base_url + div.a['href'] + '?pageSize=All'
+        product_links.append(product_link)
+    return product_links, type_name, type_image, type_description
 
 
 def get_pdoduct_info(response):
-    return [], 2, 3, 4, 5
+    soup = get_soup(response)
+    product_name = soup.find("div", {"class": "prod-intro"}).h1.text
+    product_title = ''
+    product_description = soup.find("p", {"class": "prod-desc"}).text
+    stock_status = soup.find("div", {"class": "prod-intro"}).strong.text
+    product_images = []
+    image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
+    for image_div in image_divs:
+        image_url = base_url + image_div.img['src']
+        product_images.append(image_url)
+    variant_link_rows = soup.find_all("tr", {"class": "basic-info"})
+    variant_links = []
+    for row in variant_link_rows:
+        variant_link = base_url + row.find("a", {"class": "tealium-skuLinkPgroup"})['href']
+        variant_links.append(variant_link)
+    return variant_links, product_name, product_title, product_description, product_images, stock_status
 
 
-def get_variant_info(url):
+def get_variant_info(response):
+    soup = get_soup(response)
+    pdb.set_trace()
+    title = soup.find("div", {"class": "prod-intro"}).h1.text
+    descripiton = soup.find("p", {"class": "prod-desc"}).text
+    variant_images = []
+    image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
+    for image_div in image_divs:
+        image_url = base_url + image_div.img['src']
+        variant_images.append(image_url)
+    item_code = soup.find("p", {"class": "prod-meta"}).find_all("span", {"class":""})[1].text
+    availability = soup.find("span", {"class": "overrideSkuStock 114A"}).text.strip()
+
+    ##---------------------------------------------------------------------->
+
+    style = ''
+    color = ''
+    panel_thickness_imperial = ''
+    panel_thickness_metric = ''
+    series = ''
+    maximum_operating_temperature_imperial = ''
+    maximum_operating_temperature_metric = ''
+    minimum_operating_temperature_imperial = ''
+    minimum_operating_temperature_metric = ''
+    operating_temperature_range_imperial = ''
+    operating_temperature_range_metric = ''
+    overall_width_metric = ''
+    overall_width_imperial = ''
+    full_material = ''
+    material_flammability_standard = ''
+    package_quantity = ''
     dict = {}
     dict['name'] = 'variant1'
     return dict

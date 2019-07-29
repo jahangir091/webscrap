@@ -64,8 +64,7 @@ class Product(models.Model):
     description = models.CharField(max_length=1000, blank=True, null=True)
     url = models.URLField(max_length=2000, null=True, blank=True, verbose_name=_('product url'),
                           help_text=_('base url of a competitor'))
-    in_stock = models.BooleanField(verbose_name=_('in stock'), help_text=_('product is available in stock or not'),
-                                   default=False)
+    stock_status = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('stock status'), help_text=_('stock status of this product'))
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 

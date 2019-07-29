@@ -34,7 +34,7 @@ def create_variant(product, **kwargs):
 def get_response(url):
     response = ''
     try:
-        print("loading...-->  {0}", url)
+        print("connecting...-->  {0}", url)
         response = requests.get(url)
     except Exception as e:
         print("could not connect to -->  {0}", url)
