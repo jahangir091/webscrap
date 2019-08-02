@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'store_data'
+    'store_data.apps.StoreDataConfig'
 ]
 
 MIDDLEWARE = [
@@ -80,6 +80,28 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+# DATABASES = {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'caplugsa_webscrap1',
+#         'USER': 'caplugsa_admin',
+#         'PASSWORD': 'admin',
+#         'HOST': 'https://vps8613.inmotionhosting.com:2083',
+#         'PORT': '5432',
+#         'CONN_TOUT': 900,
+#     }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'caplugsa_webscrap1',
+#         'USER': 'caplugsa_admin',
+#         'PASSWORD': 'admin',
+#         'HOST': '198.46.83.220',
+#         'PORT': '5432',
+#     }
+# }
+
+
 
 
 # Password validation

@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from store_data.models import Competitor, ProductType, Product, ProductImage, Variant, VariantImage
 
+
 # Register your models here.
 
 

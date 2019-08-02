@@ -9,6 +9,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         time = timezone.now().strftime('%X')
-        # load_essentra_products()
+        load_essentra_products()
         # self.stdout.write("It's now %s" % time)
         print("It's now %s" % time)
