@@ -25,7 +25,7 @@ SECRET_KEY = 't#gwqutc71g%-gg7e4^@o^4xk6t*w%=l(1z^=+)i8*_lob-rnu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['198.46.83.220']
 
 
 # Application definition
@@ -74,12 +74,12 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 # DATABASES = {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #         'NAME': 'caplugsa_webscrap1',
@@ -90,16 +90,16 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'CONN_TOUT': 900,
 #     }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'caplugsa_webscrap1',
-        'USER': 'caplugsa_admin',
-        'PASSWORD': 'admin',
-        'HOST': '198.46.83.220',
-        'PORT': '3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'caplugsa_webscrap1',
+#         'USER': 'caplugsa_admin',
+#         'PASSWORD': 'admin',
+#         'HOST': '198.46.83.220',
+#         'PORT': '3306',
+#     }
+# }
 
 
 

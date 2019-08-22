@@ -16,7 +16,7 @@ def load_essentra_products():
         if response:
             product_type_2_urls, product_type_1_name, product_type_1_image, product_type_1_description = get_product_type_1_name_image_description(response)
         else:
-            return
+            continue
         product_type_1 = create_product_type(competitor, product_type_1_name, product_type_1_image, product_type_1_description)
 
         for product_type_2_url in product_type_2_urls:
@@ -24,7 +24,7 @@ def load_essentra_products():
             if response:
                 product_type_3_urls, product_type_2_name, product_type_2_image, product_type_2_description = get_product_type_2_name_image_description(response)
             else:
-                return
+                continue
             product_type_2 = create_product_type(competitor, product_type_2_name, product_type_2_image, product_type_2_description, parent=product_type_1)
 
             for product_type_3_url in product_type_3_urls:
@@ -32,7 +32,7 @@ def load_essentra_products():
                 if response:
                     product_urls, product_type_3_name, product_type_3_image, product_type_3_description = get_product_type_3_name_image_description(response)
                 else:
-                    return
+                    continue
                 product_type_3 = create_product_type(competitor, product_type_3_name, product_type_3_image,product_type_3_description, parent=product_type_2)
 
                 for product_url in product_urls:
@@ -40,7 +40,7 @@ def load_essentra_products():
                     if response:
                         variant_urls, product_name, product_title, product_description, product_images, product_stock_status = get_product_info(response)
                     else:
-                        return
+                        continue
                     product = create_product(product_name, product_title, product_description, product_images, product_stock_status, product_type=product_type_3)
                     variant_count = 0
                     for variant_url in variant_urls:
@@ -48,7 +48,7 @@ def load_essentra_products():
                         if response:
                             v_title, v_descripiton, v_variant_images, v_item_code, v_availability, v_standard_pack, v_pricing, v_specifications = get_variant_info(response)
                         else:
-                            return
+                            continue
                         print("Loading product {0}-->{1}-->{2}-->{3}".format(product_type_1, product_type_2, product_type_3, product) )
                         variant = create_variant(product, v_title, v_descripiton, v_variant_images, v_item_code, v_availability, v_standard_pack, v_pricing, v_specifications)
                         variant_count += 1
