@@ -74,32 +74,32 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-# DATABASES = {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'caplugsa_webscrap1',
-#         'USER': 'caplugsa_admin',
-#         'PASSWORD': 'admin',
-#         'HOST': 'https://vps8613.inmotionhosting.com:2083',
-#         'PORT': '5432',
-#         'CONN_TOUT': 900,
-#     }
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'caplugsa_webscrap1',
-#         'USER': 'caplugsa_admin',
-#         'PASSWORD': 'admin',
-#         'HOST': '198.46.83.220',
-#         'PORT': '3306',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+DATABASES = {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'caplugsa_webscrap1',
+        'USER': 'caplugsa_admin',
+        'PASSWORD': 'admin',
+        'HOST': 'https://vps8613.inmotionhosting.com:2083',
+        'PORT': '5432',
+        'CONN_TOUT': 900,
+    }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'caplugsa_webscrap1',
+        'USER': 'caplugsa_admin',
+        'PASSWORD': 'admin',
+        'HOST': '198.46.83.220',
+        'PORT': '3306',
+    }
+}
 
 
 
