@@ -136,7 +136,10 @@ def get_variant_info(response):
     standard_pack = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span")[1].text
     pricing = {}
     pricing_table = soup.find("table", {"class": "table sku-price-table"})
-    pricing_table_items = pricing_table.tbody.find_all("tr")
+    if pricing_table:
+        pricing_table_items = pricing_table.tbody.find_all("tr")
+    else:
+        pricing_table_items = []
     quantities = []
     unit_prices = []
     for tr in pricing_table_items:
