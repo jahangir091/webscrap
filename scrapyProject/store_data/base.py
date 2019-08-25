@@ -1,9 +1,10 @@
 import requests
 import tempfile
+import re
 
 from django.core import files
 
-from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage
+from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage, Specification, Pricing
 
 
 def create_competitor(comperitor_name, url):
@@ -26,7 +27,7 @@ def create_product_type(competitor, name, image_url, description, parent=None):
     product_type.save()
     return product_type
 
-def create_product(product_name, product_title, product_description, product_images, product_in_stock, product_type=None):
+def create_product(product_name, product_title, product_description, product_images, product_in_stock, meta, product_type=None):
     product = Product()
     product.name = product_name
     if not product_type:
@@ -36,6 +37,7 @@ def create_product(product_name, product_title, product_description, product_ima
     product.title = product_title
     product.description = product_description
     product.stock_status = product_in_stock
+    product.meta = meta
     product.save()
     if product_images:
         save_product_images(product, product_images)
@@ -50,9 +52,20 @@ def create_variant(product, v_title, v_descripiton, v_images, v_item_code, v_ava
     variant.item_code = v_item_code
     variant.availability = v_availability
     variant.standard_pack_size = v_standard_pack
-    variant.pricing = v_pricing
     variant.specification = v_specifications
     variant.save()
+    for name, value in v_specifications.items():
+        spec = Specification()
+        spec.name = name
+        spec.value = value
+        spec.variant = variant
+        spec.save()
+    for i in range(len(v_pricing['quantity'])):
+        pricing = Pricing()
+        pricing.quantity = v_pricing['quantity'][i]
+        pricing.unitPprice = float(re.sub('\$', '', v_pricing['unit_price'][i]))
+        pricing.variant = variant
+        pricing.save()
     if v_images:
         save_variant_images(variant, v_images)
     return  variant

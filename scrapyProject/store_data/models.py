@@ -57,6 +57,7 @@ class Product(models.Model):
     """
     name = models.CharField(max_length=50, blank=True, null=True)
     title = models.CharField(max_length=50, blank=True, null=True)
+    meta = models.CharField(max_length=500, blank=True, null=True)
     slug = AutoSlugField(max_length=30, unique=True, populate_from='name')
     product_type = models.ForeignKey(ProductType, related_name='products', on_delete=models.CASCADE)
     short_description = models.CharField(max_length=200, blank=True, null=True)
@@ -82,6 +83,8 @@ class ProductImage(models.Model):
     title = models.CharField(max_length=50, blank=True, null=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='products')
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
 
 
 class Variant(models.Model):
@@ -95,8 +98,11 @@ class Variant(models.Model):
     item_code = models.CharField(max_length=30, blank=True, null=True)
     availability = models.CharField(max_length=50, blank=True, null=True, help_text=_('availability of this product'))
     standard_pack_size = models.IntegerField(blank=True, default=0, help_text =_('number of items in a pack'))
-    pricing = JSONField()
-    specification = JSONField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
 
 def variant_images_directory_path(instance, filename):
@@ -110,3 +116,33 @@ class VariantImage(models.Model):
     title = models.CharField(max_length=50, blank=True, null=True)
     variant = models.ForeignKey(Variant, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='variants')
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+
+class Specification(models.Model):
+    """
+
+    """
+    name = models.CharField(max_length=150, blank=True, null=True)
+    value = models.CharField(max_length=300, blank=True, null=True)
+    variant = models.ForeignKey(Variant, related_name='specifications', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Pricing(models.Model):
+    """
+
+    """
+    quantity = models.CharField(max_length=30, blank=True, null=True)
+    unitPprice = models.DecimalField(max_digits=20, decimal_places=4)
+    variant = models.ForeignKey(Variant, related_name='pricing', on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.quantity

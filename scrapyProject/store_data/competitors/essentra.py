@@ -38,10 +38,10 @@ def load_essentra_products():
                 for product_url in product_urls:
                     response = get_response(product_url)
                     if response:
-                        variant_urls, product_name, product_title, product_description, product_images, product_stock_status = get_product_info(response)
+                        variant_urls, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(response)
                     else:
                         continue
-                    product = create_product(product_name, product_title, product_description, product_images, product_stock_status, product_type=product_type_3)
+                    product = create_product(product_name, product_title, product_description, product_images, product_stock_status, meta, product_type=product_type_3)
                     variant_count = 0
                     for variant_url in variant_urls:
                         response = get_response(variant_url)
@@ -109,6 +109,8 @@ def get_product_info(response):
     stock_status = soup.find("div", {"class": "prod-intro"}).strong.text
     product_images = []
     image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
+    meta = soup.head.find("meta", {"name":"description"}).attrs['content']
+
     for image_div in image_divs:
         image_url = base_url + image_div.img['src']
         product_images.append(image_url)
@@ -117,7 +119,7 @@ def get_product_info(response):
     for row in variant_link_rows:
         variant_link = base_url + row.find("a", {"class": "tealium-skuLinkPgroup"})['href']
         variant_links.append(variant_link)
-    return variant_links, product_name, product_title, product_description, product_images, stock_status
+    return variant_links, product_name, product_title, product_description, product_images, stock_status, meta
 
 
 def get_variant_info(response):
