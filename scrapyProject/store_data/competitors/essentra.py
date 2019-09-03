@@ -13,7 +13,8 @@ product_type_1_urls = ['https://www.essentracomponents.com/en-us/protection']
 
 
 def load_essentra_products():
-    competitor = create_competitor(competitor_name, base_url)
+    name  = 'essentra'
+    competitor = create_competitor(competitor_name, base_url, name)
     for product_type_1_url in product_type_1_urls:
         response = get_response(product_type_1_url)
         if response:
