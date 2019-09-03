@@ -7,8 +7,10 @@ from django.core import files
 from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage, Specification, Pricing
 
 
-def create_competitor(comperitor_name, url):
-    competitor = Competitor()
+def create_competitor(comperitor_name, url, name):
+    competitor, created = Competitor.objects.get_or_create(name=name)
+    if created:
+        return competitor
     competitor.name = comperitor_name
     competitor.url = url
     competitor.save()
@@ -84,7 +86,11 @@ def get_response(url):
 
 
 def save_image_from_url(image_url, image_field):
-    request = requests.get(image_url, stream=True)
+    try:
+        request = requests.get(image_url, stream=True)
+    except Exception as e:
+        print("No image found with this url {0}".format(image_url))
+        return
     if request.status_code != requests.codes.ok:
         print("No image found with this url {0}".format(image_url))
         return

@@ -6,10 +6,10 @@ from store_data.base import create_competitor, create_product_type, create_produ
 competitor_name = "Essentra"
 base_url = 'https://www.essentracomponents.com'
 
-product_type_1_urls = ['https://www.essentracomponents.com/en-us/protection',
-                       'https://www.essentracomponents.com/en-us/electronics',
-                       'https://www.essentracomponents.com/en-us/fasteners',
-                       'https://www.essentracomponents.com/en-us/hardware']
+product_type_1_urls = ['https://www.essentracomponents.com/en-us/protection']
+                       # 'https://www.essentracomponents.com/en-us/electronics',
+                       # 'https://www.essentracomponents.com/en-us/fasteners',
+                       # 'https://www.essentracomponents.com/en-us/hardware']
 
 
 def load_essentra_products():
@@ -115,12 +115,16 @@ def get_product_info(response):
     meta = soup.head.find("meta", {"name":"description"}).attrs['content']
 
     for image_div in image_divs:
-        image_url = base_url + image_div.img['src']
+        image_url = ''
+        if image_div is not None:
+            image_url = base_url + image_div.img['src']
         product_images.append(image_url)
     variant_link_rows = soup.find_all("tr", {"class": "basic-info"})
     variant_links = []
     for row in variant_link_rows:
-        variant_link = base_url + row.find("a", {"class": "tealium-skuLinkPgroup"})['href']
+        variant_link = ''
+        if row is not None:
+            variant_link = base_url + row.find("a", {"class": "tealium-skuLinkPgroup"})['href']
         variant_links.append(variant_link)
     return variant_links, product_name, product_title, product_description, product_images, stock_status, meta
 
@@ -132,17 +136,22 @@ def get_variant_info(response):
     variant_images = []
     image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
     for image_div in image_divs:
-        image_url = base_url + image_div.img['src']
+        image_url = ''
+        if image_div is not None:
+            image_url = base_url + image_div.img['src']
         variant_images.append(image_url)
     item_code = soup.find("p", {"class": "prod-meta"}).find_all("span")[1].text
     availability = soup.find("p", {"class": "prod-meta"}).find_all("span")[2].text
     standard_pack = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span")[1].text
     pricing = {}
-    pricing_table = soup.find("table", {"class": "table sku-price-table"})
-    if pricing_table:
-        pricing_table_items = pricing_table.tbody.find_all("tr")
-    else:
+    try:
+        pricing_table = soup.find("table", {"class": "table sku-price-table"})
+    except Exception as e:
         pricing_table_items = []
+        pass
+    else:
+        pricing_table_items = pricing_table.tbody.find_all("tr")
+
     quantities = []
     unit_prices = []
     for tr in pricing_table_items:
@@ -152,16 +161,25 @@ def get_variant_info(response):
     pricing['unit_price'] = unit_prices
 
     specifications = {}
-    specifications_div = soup.find("div", {"class":"section has-essentra-row"})
-    specifications_table = specifications_div.table
-    specifications_table_rows = specifications_table.tbody.find_all("tr")
+    try:
+        specifications_div = soup.find("div", {"class":"section has-essentra-row"})
+        specifications_table = specifications_div.table
+        specifications_table_rows = specifications_table.tbody.find_all("tr")
+    except Exception as e:
+        specifications_table_rows = []
+        pass
     for row in specifications_table_rows:
-        key = row.th.text.replace('\n', '')
-        if 'attr-dim-METRIC' in row.attrs['class']:
-            key += 'metric'
-        if 'attr-dim-IMPERIAL' in row.attrs['class']:
-            key += 'imperial'
-        value = row.td.text.replace('\n', '')
-        specifications[key] = value
+        try:
+            row.th.text
+        except Exception as e:
+            pass
+        else:
+            key = row.th.text.replace('\n', '')
+            if 'attr-dim-METRIC' in row.attrs['class']:
+                key += 'metric'
+            if 'attr-dim-IMPERIAL' in row.attrs['class']:
+                key += 'imperial'
+            value = row.td.text.replace('\n', '')
+            specifications[key] = value
 
     return title, descripiton, variant_images, item_code, availability, standard_pack, pricing, specifications
