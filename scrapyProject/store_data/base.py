@@ -63,7 +63,8 @@ def create_variant(product, v_title, v_descripiton, v_images, v_item_code, v_ava
     for i in range(len(v_pricing['quantity'])):
         pricing = Pricing()
         pricing.quantity = v_pricing['quantity'][i]
-        pricing.unitPprice = float(re.sub('\$', '', v_pricing['unit_price'][i]))
+        primary_string = re.sub('\$', '', v_pricing['unit_price'][i])
+        pricing.unitPprice = float(primary_string.replace(',',''))
         pricing.variant = variant
         pricing.save()
     if v_images:
