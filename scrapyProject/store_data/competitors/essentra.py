@@ -6,7 +6,10 @@ from store_data.base import create_competitor, create_product_type, create_produ
 competitor_name = "Essentra"
 base_url = 'https://www.essentracomponents.com'
 
-product_type_1_urls = ['https://www.essentracomponents.com/en-us/electronics']
+product_type_1_urls = ['https://www.essentracomponents.com/en-us/protection',
+                       'https://www.essentracomponents.com/en-us/electronics',
+                       'https://www.essentracomponents.com/en-us/fasteners',
+                       'https://www.essentracomponents.com/en-us/hardware']
 
 
 def load_essentra_products():

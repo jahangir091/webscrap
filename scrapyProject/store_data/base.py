@@ -86,9 +86,10 @@ def save_image_from_url(image_url, image_field):
     request = requests.get(image_url, stream=True)
     if request.status_code != requests.codes.ok:
         print("No image found with this url {0}".format(image_url))
+        return
 
     # Get the filename from the url, used for saving later
-    file_name = image_url.split('/')[-1]
+    file_name = image_url.split('/')[-1] + '.jpeg'
     temp_file = tempfile.NamedTemporaryFile()
     for block in request.iter_content(1024 * 8):
         if not block:
