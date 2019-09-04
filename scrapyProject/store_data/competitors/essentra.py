@@ -67,28 +67,26 @@ def get_soup(response):
 
 def get_product_type_1_name_image_description(response):
     soup = get_soup(response)
-    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text
+    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text if soup.find("div", {"class": "container container-with-padding"}) else ''
     type_image = None
     type_description = ''
     sub_type_link_divs = soup.find_all("div", {"class": "row category-wrapper has-margin-top"})
     sub_type_links = []
     for link_div in sub_type_link_divs:
-        link = base_url + link_div.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}).a['href']
-        sub_type_links.append(link)
+        sub_type_links.append(base_url + link_div.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}).a['href']) if link_div.find("h2", {"class": "is-bold category-primary-title d-none d-lg-block"}) else ''
 
     return sub_type_links, type_name, type_image, type_description
 
 
 def get_product_type_2_name_image_description(response):
     soup = get_soup(response)
-    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text
-    type_image = base_url + soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).img['src']
-    type_description = soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).span.text
-    sub_type_link_divs = soup.find("div", {"class": "col-lg-8 category-items"}).find_all("li", {"class": "col-6 category-item"})
+    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text if soup.find("div", {"class": "container container-with-padding"}) else ''
+    type_image = base_url + soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).img['src'] if soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}) else ''
+    type_description = soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).span.text if soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}) else ''
+    sub_type_link_divs = soup.find("div", {"class": "col-lg-8 category-items"}).find_all("li", {"class": "col-6 category-item"}) if soup.find("div", {"class": "col-lg-8 category-items"}) else []
     sub_type_links = []
     for li in sub_type_link_divs:
-        link = base_url + li.a['href'] + '?pageSize=All'
-        sub_type_links.append(link)
+        sub_type_links.append(base_url + li.a['href'] + '?pageSize=All') if li else ''
     return sub_type_links, type_name, type_image, type_description
 
 
@@ -107,51 +105,46 @@ def get_product_type_3_name_image_description(response):
 
 def get_product_info(response):
     soup = get_soup(response)
-    product_name = soup.find("div", {"class": "prod-intro"}).h1.text
+    product_name = soup.find("div", {"class": "prod-intro"}).h1.text if soup.find("div", {"class": "prod-intro"}) else ''
     product_title = ''
-    product_description = soup.find("p", {"class": "prod-desc"}).text
-    stock_status = soup.find("div", {"class": "prod-intro"}).strong.text
+    meta = soup.head.find("meta", {"name":"description"}).attrs['content'] if soup.head.find("meta", {"name":"description"}) else ''
+    product_description = soup.find("p", {"class": "prod-desc"}).text if soup.find("p", {"class": "prod-desc"}) else ''
+    stock_status = soup.find("div", {"class": "prod-intro"}).strong.text if soup.find("div", {"class": "prod-intro"}) else ''
     product_images = []
     image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
-    meta = soup.head.find("meta", {"name":"description"}).attrs['content']
-
     for image_div in image_divs:
-        image_url = ''
-        if image_div is not None:
-            image_url = base_url + image_div.img['src']
-        product_images.append(image_url)
+        product_images.append(base_url + image_div.img['src']) if image_div.find('img') else ''
+
     variant_link_rows = soup.find_all("tr", {"class": "basic-info"})
     variant_links = []
     for row in variant_link_rows:
-        variant_link = ''
-        if row is not None:
-            variant_link = base_url + row.find("a", {"class": "tealium-skuLinkPgroup"})['href']
-        variant_links.append(variant_link)
+        variant_links.append(base_url + row.find("a", {"class": "tealium-skuLinkPgroup"})['href']) if row.find("a", {"class": "tealium-skuLinkPgroup"}) else ''
     return variant_links, product_name, product_title, product_description, product_images, stock_status, meta
 
 
 def get_variant_info(response):
     soup = get_soup(response)
-    title = soup.find("div", {"class": "prod-intro"}).h1.text
-    descripiton = soup.find("p", {"class": "prod-desc"}).text
+    title = soup.find("div", {"class": "prod-intro"}).h1.text if soup.find("div", {"class": "prod-intro"}) else ''
+    descripiton = soup.find("p", {"class": "prod-desc"}).text if soup.find("p", {"class": "prod-desc"}) else ''
     variant_images = []
     image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
     for image_div in image_divs:
-        image_url = ''
-        if image_div is not None:
-            image_url = base_url + image_div.img['src']
-        variant_images.append(image_url)
-    item_code = soup.find("p", {"class": "prod-meta"}).find_all("span")[1].text
-    availability = soup.find("p", {"class": "prod-meta"}).find_all("span")[2].text
+        variant_images.append(base_url + image_div.img['src']) if image_div.find('img') else ''
+
+    # item_code = soup.find("p", {"class": "prod-meta"}).find_all("span")[1].text
+    item_code_spans = soup.find("p", {"class": "prod-meta"}).find_all("span") if soup.find("p", {"class": "prod-meta"}) else []
+    item_code = item_code_spans[1].text if item_code_spans else ''
+
+    # availability = soup.find("p", {"class": "prod-meta"}).find_all("span")[2].text
+    availability_spans = soup.find("p", {"class": "prod-meta"}).find_all("span") if soup.find("p", {"class": "prod-meta"}) else []
+    availability = availability_spans[2].text if availability_spans else ''
+
     standard_pack = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span")[1].text
+    standard_pack_spans = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span") if soup.find("div", {"id": "broadleaf-sku-details"}) else []
+    standard_pack = standard_pack_spans[1].text if standard_pack_spans else ''
     pricing = {}
-    try:
-        pricing_table = soup.find("table", {"class": "table sku-price-table"})
-    except Exception as e:
-        pricing_table_items = []
-        pass
-    else:
-        pricing_table_items = pricing_table.tbody.find_all("tr")
+    pricing_table = soup.find("table", {"class": "table sku-price-table"})
+    pricing_table_items = pricing_table.tbody.find_all("tr") if pricing_table else []
 
     quantities = []
     unit_prices = []
@@ -162,25 +155,17 @@ def get_variant_info(response):
     pricing['unit_price'] = unit_prices
 
     specifications = {}
-    try:
-        specifications_div = soup.find("div", {"class":"section has-essentra-row"})
-        specifications_table = specifications_div.table
-        specifications_table_rows = specifications_table.tbody.find_all("tr")
-    except Exception as e:
-        specifications_table_rows = []
-        pass
+    specifications_div = soup.find("div", {"class":"section has-essentra-row"})
+    specifications_table = specifications_div.table if specifications_div else None
+    specifications_table_rows = specifications_table.tbody.find_all("tr") if specifications_table else []
+
     for row in specifications_table_rows:
-        try:
-            row.th.text
-        except Exception as e:
-            pass
-        else:
-            key = row.th.text.replace('\n', '')
-            if 'attr-dim-METRIC' in row.attrs['class']:
-                key += 'metric'
-            if 'attr-dim-IMPERIAL' in row.attrs['class']:
-                key += 'imperial'
-            value = row.td.text.replace('\n', '')
-            specifications[key] = value
+        key = row.th.text.replace('\n', '')
+        if 'attr-dim-METRIC' in row.attrs['class']:
+            key += 'metric'
+        if 'attr-dim-IMPERIAL' in row.attrs['class']:
+            key += 'imperial'
+        value = row.td.text.replace('\n', '')
+        specifications[key] = value
 
     return title, descripiton, variant_images, item_code, availability, standard_pack, pricing, specifications
