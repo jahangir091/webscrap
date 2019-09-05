@@ -6,16 +6,18 @@ from store_data.base import create_competitor, create_product_type, create_produ
 competitor_name = "Essentra"
 base_url = 'https://www.essentracomponents.com'
 
-product_type_1_urls = ['https://www.essentracomponents.com/en-us/protection']
-                       # 'https://www.essentracomponents.com/en-us/electronics',
-                       # 'https://www.essentracomponents.com/en-us/fasteners',
-                       # 'https://www.essentracomponents.com/en-us/hardware']
+product_type_1_urls = ['https://www.essentracomponents.com/en-us/protection',
+                       'https://www.essentracomponents.com/en-us/electronics',
+                       'https://www.essentracomponents.com/en-us/fasteners',
+                       'https://www.essentracomponents.com/en-us/hardware']
 
 
 def load_essentra_products():
     name  = 'essentra'
     competitor = create_competitor(competitor_name, base_url, name)
+    url_no = 0
     for product_type_1_url in product_type_1_urls:
+        url_no += 1
         response = get_response(product_type_1_url)
         if response:
             product_type_2_urls, product_type_1_name, product_type_1_image, product_type_1_description = get_product_type_1_name_image_description(response)
@@ -53,7 +55,7 @@ def load_essentra_products():
                             v_title, v_descripiton, v_variant_images, v_item_code, v_availability, v_standard_pack, v_pricing, v_specifications = get_variant_info(response)
                         else:
                             continue
-                        print("Loading product {0}-->{1}-->{2}-->{3}".format(product_type_1, product_type_2, product_type_3, product) )
+                        print("{4} Loading product {0}-->{1}-->{2}-->{3}".format(product_type_1, product_type_2, product_type_3, product, url_no) )
                         variant = create_variant(product, v_title, v_descripiton, v_variant_images, v_item_code, v_availability, v_standard_pack, v_pricing, v_specifications)
                         variant_count += 1
                     print("loaded {0} variants of product {1}".format(variant_count, product.name))
