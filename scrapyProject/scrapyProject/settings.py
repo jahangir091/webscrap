@@ -25,7 +25,7 @@ SECRET_KEY = 't#gwqutc71g%-gg7e4^@o^4xk6t*w%=l(1z^=+)i8*_lob-rnu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['198.46.83.220']
+ALLOWED_HOSTS = ['198.46.83.220', 'localhost']
 
 
 # Application definition
@@ -80,15 +80,17 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASES = {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'caplugsa_webscrap1',
-        'USER': 'caplugsa_admin',
-        'PASSWORD': 'admin',
-        'HOST': 'https://vps8613.inmotionhosting.com:2083',
-        'PORT': '5432',
-        'CONN_TOUT': 900,
-    }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'caplugsa_webscrap1',
+#         'USER': 'caplugsa_admin',
+#         'PASSWORD': 'admin',
+#         'HOST': '198.46.83.220',
+#         'PORT': '3306',
+#     }
+# }
 
 DATABASES = {
     'default': {
@@ -96,7 +98,7 @@ DATABASES = {
         'NAME': 'caplugsa_webscrap1',
         'USER': 'caplugsa_admin',
         'PASSWORD': 'admin',
-        'HOST': '198.46.83.220',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
@@ -141,3 +143,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 900000
+
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    pass
