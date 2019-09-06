@@ -69,7 +69,7 @@ def get_soup(response):
 
 def get_product_type_1_name_image_description(response):
     soup = get_soup(response)
-    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text if soup.find("div", {"class": "container container-with-padding"}) else ''
+    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text.strip() if soup.find("div", {"class": "container container-with-padding"}) else ''
     type_image = None
     type_description = ''
     sub_type_link_divs = soup.find_all("div", {"class": "row category-wrapper has-margin-top"})
@@ -82,9 +82,9 @@ def get_product_type_1_name_image_description(response):
 
 def get_product_type_2_name_image_description(response):
     soup = get_soup(response)
-    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text if soup.find("div", {"class": "container container-with-padding"}) else ''
+    type_name = soup.find("div", {"class": "container container-with-padding"}).h1.text.strip() if soup.find("div", {"class": "container container-with-padding"}) else ''
     type_image = base_url + soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).img['src'] if soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}) else ''
-    type_description = soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).span.text if soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}) else ''
+    type_description = soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}).span.text.strip() if soup.find("div", {"class": "col-lg-4 category-primary-item row align-content-start"}) else ''
     sub_type_link_divs = soup.find("div", {"class": "col-lg-8 category-items"}).find_all("li", {"class": "col-6 category-item"}) if soup.find("div", {"class": "col-lg-8 category-items"}) else []
     sub_type_links = []
     for li in sub_type_link_divs:
@@ -94,7 +94,7 @@ def get_product_type_2_name_image_description(response):
 
 def get_product_type_3_name_image_description(response):
     soup = get_soup(response)
-    type_name = soup.find("div", {"class": "container container-with-padding shop-page"}).h1.text
+    type_name = soup.find("div", {"class": "container container-with-padding shop-page"}).h1.text.strip()
     type_image = None
     type_description = ''
     product_link_divs = soup.find_all("div", {"class": "product-wrapper"})
@@ -107,11 +107,11 @@ def get_product_type_3_name_image_description(response):
 
 def get_product_info(response):
     soup = get_soup(response)
-    product_name = soup.find("div", {"class": "prod-intro"}).h1.text if soup.find("div", {"class": "prod-intro"}) else ''
+    product_name = soup.find("div", {"class": "prod-intro"}).h1.text.strip() if soup.find("div", {"class": "prod-intro"}) else ''
     product_title = ''
     meta = soup.head.find("meta", {"name":"description"}).attrs['content'] if soup.head.find("meta", {"name":"description"}) else ''
-    product_description = soup.find("p", {"class": "prod-desc"}).text if soup.find("p", {"class": "prod-desc"}) else ''
-    stock_status = soup.find("div", {"class": "prod-intro"}).strong.text if soup.find("div", {"class": "prod-intro"}) else ''
+    product_description = soup.find("p", {"class": "prod-desc"}).text.strip() if soup.find("p", {"class": "prod-desc"}) else ''
+    stock_status = soup.find("div", {"class": "prod-intro"}).strong.text.strip() if soup.find("div", {"class": "prod-intro"}) else ''
     product_images = []
     image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
     for image_div in image_divs:
@@ -126,8 +126,8 @@ def get_product_info(response):
 
 def get_variant_info(response):
     soup = get_soup(response)
-    title = soup.find("div", {"class": "prod-intro"}).h1.text if soup.find("div", {"class": "prod-intro"}) else ''
-    descripiton = soup.find("p", {"class": "prod-desc"}).text if soup.find("p", {"class": "prod-desc"}) else ''
+    title = soup.find("div", {"class": "prod-intro"}).h1.text.strip() if soup.find("div", {"class": "prod-intro"}) else ''
+    descripiton = soup.find("p", {"class": "prod-desc"}).text.strip() if soup.find("p", {"class": "prod-desc"}) else ''
     variant_images = []
     image_divs = soup.find_all("div", {"class": "prod-gallery-item"})
     for image_div in image_divs:
@@ -135,15 +135,21 @@ def get_variant_info(response):
 
     # item_code = soup.find("p", {"class": "prod-meta"}).find_all("span")[1].text
     item_code_spans = soup.find("p", {"class": "prod-meta"}).find_all("span") if soup.find("p", {"class": "prod-meta"}) else []
-    item_code = item_code_spans[1].text if item_code_spans else ''
+    item_code = item_code_spans[1].text.strip() if item_code_spans else ''
 
     # availability = soup.find("p", {"class": "prod-meta"}).find_all("span")[2].text
     availability_spans = soup.find("p", {"class": "prod-meta"}).find_all("span") if soup.find("p", {"class": "prod-meta"}) else []
-    availability = availability_spans[2].text if availability_spans else ''
+    availability = availability_spans[2].text.strip() if availability_spans else ''
 
-    standard_pack = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span")[1].text
+    #standard_pack = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span")[1].text
     standard_pack_spans = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span") if soup.find("div", {"id": "broadleaf-sku-details"}) else []
-    standard_pack = standard_pack_spans[1].text if standard_pack_spans else 0
+    standard_pack = standard_pack_spans[1].text.strip() if standard_pack_spans else 0
+    try:
+        standard_pack = int(standard_pack)
+    except Exception as e:
+        standard_pack = 0
+        pass
+
     pricing = {}
     pricing_table = soup.find("table", {"class": "table sku-price-table"})
     pricing_table_items = pricing_table.tbody.find_all("tr") if pricing_table else []
@@ -151,8 +157,8 @@ def get_variant_info(response):
     quantities = []
     unit_prices = []
     for tr in pricing_table_items:
-        quantities.append(tr.find_all("td")[0].find_all("b")[0].text + tr.find_all("td")[0].find_all("b")[1].text)
-        unit_prices.append(tr.find_all("td")[1].text)
+        quantities.append(tr.find_all("td")[0].find_all("b")[0].text.strip() + tr.find_all("td")[0].find_all("b")[1].text.strip())
+        unit_prices.append(tr.find_all("td")[1].text.strip())
     pricing['quantity'] = quantities
     pricing['unit_price'] = unit_prices
 
