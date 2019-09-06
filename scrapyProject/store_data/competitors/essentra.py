@@ -143,7 +143,7 @@ def get_variant_info(response):
 
     standard_pack = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span")[1].text
     standard_pack_spans = soup.find("div", {"id": "broadleaf-sku-details"}).find_all("span") if soup.find("div", {"id": "broadleaf-sku-details"}) else []
-    standard_pack = standard_pack_spans[1].text if standard_pack_spans else ''
+    standard_pack = standard_pack_spans[1].text if standard_pack_spans else 0
     pricing = {}
     pricing_table = soup.find("table", {"class": "table sku-price-table"})
     pricing_table_items = pricing_table.tbody.find_all("tr") if pricing_table else []
