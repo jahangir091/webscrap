@@ -2,6 +2,8 @@ import requests
 import tempfile
 import re
 
+from bs4 import BeautifulSoup as soup
+
 from django.core import files
 
 from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage, Specification, Pricing
@@ -119,3 +121,9 @@ def save_variant_images(variant, image_urls):
         variant_image.title = variant.title
         variant_image.variant = variant
         save_image_from_url(url, variant_image.image)
+
+
+def get_soup(response):
+    html_page = response.text
+    page_soup = soup(html_page, 'html.parser')
+    return page_soup

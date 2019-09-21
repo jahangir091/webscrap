@@ -1,7 +1,7 @@
 import json
-from bs4 import BeautifulSoup as soup
 
 from store_data.base import create_competitor, create_product_type, create_product, create_variant, get_response
+from store_data.base import get_soup
 
 competitor_name = "Essentra"
 base_url = 'https://www.essentracomponents.com'
@@ -59,12 +59,6 @@ def load_essentra_products():
                         variant = create_variant(product, v_title, v_descripiton, v_variant_images, v_item_code, v_availability, v_standard_pack, v_pricing, v_specifications)
                         variant_count += 1
                     print("loaded {0} variants of product {1}".format(variant_count, product.name))
-
-
-def get_soup(response):
-    html_page = response.text
-    page_soup = soup(html_page, 'html.parser')
-    return page_soup
 
 
 def get_product_type_1_name_image_description(response):

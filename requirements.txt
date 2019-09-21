@@ -7,7 +7,9 @@ requests==2.22.0
 soupsieve==1.9.1
 urllib3==1.25.3
 Pillow
-django-autoslug
+django-autoslug==1.9.6
 jsonfield
 pyOpenSSL
+django_extensions
 mysqlclient
+selenium
