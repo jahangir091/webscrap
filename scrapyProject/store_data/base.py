@@ -11,7 +11,7 @@ from store_data.models import Competitor, ProductType, Product, Variant, Product
 
 def create_competitor(comperitor_name, url):
     competitor, created = Competitor.objects.get_or_create(name=comperitor_name)
-    if created:
+    if competitor:
         return competitor
     competitor.url = url
     competitor.save()
