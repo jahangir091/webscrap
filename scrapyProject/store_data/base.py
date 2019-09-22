@@ -9,11 +9,10 @@ from django.core import files
 from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage, Specification, Pricing
 
 
-def create_competitor(comperitor_name, url, name):
-    competitor, created = Competitor.objects.get_or_create(name=name)
+def create_competitor(comperitor_name, url):
+    competitor, created = Competitor.objects.get_or_create(name=comperitor_name)
     if created:
         return competitor
-    competitor.name = comperitor_name
     competitor.url = url
     competitor.save()
     return competitor
