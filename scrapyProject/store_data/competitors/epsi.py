@@ -1,6 +1,7 @@
 
 from store_data.base import create_competitor, create_product_type, create_product, create_variant, get_response
 from store_data.base import get_soup
+from time import sleep
 
 product_type_urls = [
     "https://www.epsi.com/caps",
@@ -20,9 +21,13 @@ def load_epsi_products():
         product_type_name = url.split('/')[3]
         product_type = create_product_type(competitor, product_type_name, None, '')
         response = get_response(url)
+        print('wait 10 seconds')
+        sleep(10)
         product_urls = get_product_urls(response)
         for product_url in product_urls:
             response = get_response(product_url)
+            print('wait 10 seconds')
+            sleep(10)
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(response)
             product = create_product(product_name, product_title, product_description, product_images,
                                      product_stock_status, meta, product_type=product_type)

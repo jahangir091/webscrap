@@ -81,6 +81,7 @@ def get_response(url):
         print("connecting...-->  {0}".format(url))
         response = requests.get(url)
     except Exception as e:
+        print(e)
         print("could not connect to -->  {0}".format(url))
     finally:
         return response
