@@ -91,11 +91,12 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'PORT': '3306',
 #     }
 # }
+dbs = ['caplugsa_webscrap1', 'caplugsa_epsi']
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'caplugsa_webscrap1',
+        'NAME': dbs[1],
         'USER': 'caplugsa_admin',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
