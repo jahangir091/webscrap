@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from autoslug import AutoSlugField
 from jsonfield import JSONField
+uploadto = settings.UPLOAD_TO
 
 
 class Competitor(models.Model):
@@ -13,7 +14,7 @@ class Competitor(models.Model):
     url = models.URLField(max_length=2000, null=True, blank=True, verbose_name=_('competitor url'),
                           help_text=_('base url of a competitor'))
     slug = AutoSlugField(max_length=30, populate_from='name', unique=True)
-    image = models.ImageField(upload_to='competitors', blank=True, null=True)
+    image = models.ImageField(upload_to=uploadto + 'competitors', blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -34,7 +35,7 @@ class ProductType(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     slug = AutoSlugField(max_length=30, unique=True,populate_from='name')
     image_location = models.CharField(max_length=1000, blank=True, null=True)
-    image = models.ImageField(upload_to='product_types', blank=True, null=True)
+    image = models.ImageField(upload_to=uploadto + 'product_types', blank=True, null=True)
     description = models.CharField(max_length=1500, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -82,7 +83,7 @@ class ProductImage(models.Model):
     """
     title = models.CharField(max_length=50, blank=True, null=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='products')
+    image = models.ImageField(upload_to=uploadto + 'products')
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -115,7 +116,7 @@ class VariantImage(models.Model):
     """
     title = models.CharField(max_length=50, blank=True, null=True)
     variant = models.ForeignKey(Variant, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='variants')
+    image = models.ImageField(upload_to=uploadto + 'variants')
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -146,3 +147,14 @@ class Pricing(models.Model):
 
     def __str__(self):
         return self.quantity
+
+
+class ProductDocument(models.Model):
+    """
+
+    """
+    title = models.CharField(max_length=50, blank=True, null=True)
+    product = models.ForeignKey(Product, related_name='documents', on_delete=models.CASCADE)
+    document = models.FileField(upload_to=uploadto + 'documents') #ImageField(upload_to=uploadto + 'variants')
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)

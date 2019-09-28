@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup as soup
 from django.core import files
 
 from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage, Specification, Pricing
+from store_data.models import ProductDocument
 
 
 def create_competitor(comperitor_name, url):
@@ -29,7 +30,7 @@ def create_product_type(competitor, name, image_url, description, parent=None):
     product_type.save()
     return product_type
 
-def create_product(product_name, product_title, product_description, product_images, product_in_stock, meta, product_type=None):
+def create_product(product_name, product_title, product_description, product_images, product_in_stock, meta, product_type=None, product_documents=None):
     product = Product()
     product.name = product_name
     if not product_type:
@@ -43,6 +44,8 @@ def create_product(product_name, product_title, product_description, product_ima
     product.save()
     if product_images:
         save_product_images(product, product_images)
+    if product_documents:
+        save_product_documents(product, product_documents)
     return product
 
 
@@ -106,12 +109,42 @@ def save_image_from_url(image_url, image_field):
     image_field.save(file_name, files.File(temp_file))
 
 
+def save_document_from_url(url, file_name, document_field):
+
+    try:
+        request = requests.get(url, stream=True)
+    except Exception as e:
+        print("No document found with this url {0}".format(url))
+        return
+    if request.status_code != requests.codes.ok:
+        print("No document found with this url {0}".format(url))
+        return
+
+    # Get the filename from the url, used for saving later
+    temp_file = tempfile.NamedTemporaryFile()
+    for block in request.iter_content(1024 * 8):
+        if not block:
+            break
+        temp_file.write(block)
+    document_field.save(file_name, files.File(temp_file))
+
+
 def save_product_images(product, image_urls):
     for url in image_urls:
         product_image = ProductImage()
         product_image.title = product.name
         product_image.product = product
         save_image_from_url(url, product_image.image)
+
+
+def save_product_documents(product, document_urls):
+    for url in document_urls:
+        doc_url = url.split('@')[0]
+        file_name = url.split('@')[1] + '.pdf'
+        product_document = ProductDocument()
+        product_document.title = product.name
+        product_document.product = product
+        save_document_from_url(url, file_name, product_document.document)
 
 
 def save_variant_images(variant, image_urls):

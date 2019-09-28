@@ -28,9 +28,9 @@ def load_epsi_products():
             response = get_response(product_url)
             print('wait 10 seconds')
             sleep(10)
-            variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(response)
+            variants, product_name, product_title, product_description, product_images, product_documents, product_stock_status, meta = get_product_info(response)
             product = create_product(product_name, product_title, product_description, product_images,
-                                     product_stock_status, meta, product_type=product_type)
+                                     product_stock_status, meta, product_type=product_type, product_documents=product_documents)
             variant_count = 0
             for variant in variants:
                 print("Loading product {0}-->{1}".format(product_type, product))
@@ -66,6 +66,13 @@ def get_product_info(response):
         product_images.append(img_url)
     overview_div = soup.find('div', {'id': 'overview'}) if soup.find('div', {'id': 'overview'}) else None
     overview_paragraphs = overview_div.find_all('p') if overview_div else None
+
+    #fetch_product_documents
+    product_documents = []
+    document_divs = soup.find('div', {'id': 'documents'}).find_all('li') if soup.find('div', {'id': 'documents'}) else None
+    if document_divs:
+        for doc in document_divs:
+            product_documents.append('https:' + doc.a['href'] + '@' + doc.text.strip() )
 
     #fetch product description
     product_description = soup.find('div', {'id':'overview'}).text.strip() if soup.find('div', {'id':'overview'}) else ''
@@ -114,5 +121,5 @@ def get_product_info(response):
     #test
     #https: // www.epsi.com / hksc - series - sheet - and -pipe - suspender - hook
 
-    return variants, product_name, product_title, product_description, product_images, stock_status, meta
+    return variants, product_name, product_title, product_description, product_images, product_documents, stock_status, meta
 

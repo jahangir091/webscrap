@@ -91,7 +91,8 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'PORT': '3306',
 #     }
 # }
-dbs = ['caplugsa_webscrap1', 'caplugsa_epsi']
+UPLOAD_TO = 'epsi/'
+dbs = ['caplugsa_essentra', 'caplugsa_epsi']
 
 DATABASES = {
     'default': {
