@@ -144,7 +144,7 @@ def save_product_documents(product, document_urls):
         product_document = ProductDocument()
         product_document.title = product.name
         product_document.product = product
-        save_document_from_url(url, file_name, product_document.document)
+        save_document_from_url(doc_url, file_name, product_document.document)
 
 
 def save_variant_images(variant, image_urls):
