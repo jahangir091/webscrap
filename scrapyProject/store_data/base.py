@@ -89,7 +89,7 @@ def get_response(url):
         return response
 
 
-def save_image_from_url(image_url, image_field):
+def save_image_from_url(image_url, file_name, image_field):
     try:
         request = requests.get(image_url, stream=True)
     except Exception as e:
@@ -100,7 +100,6 @@ def save_image_from_url(image_url, image_field):
         return
 
     # Get the filename from the url, used for saving later
-    file_name = image_url.split('/')[-1] + '.jpeg'
     temp_file = tempfile.NamedTemporaryFile()
     for block in request.iter_content(1024 * 8):
         if not block:
@@ -134,7 +133,10 @@ def save_product_images(product, image_urls):
         product_image = ProductImage()
         product_image.title = product.name
         product_image.product = product
-        save_image_from_url(url, product_image.image)
+        file_name = url.split('/')[-1]
+        #if file does not have any extention (like essectra) then use the following line
+        #file_name = file_name.split('.')[0] + '.jpg'
+        save_image_from_url(url, file_name, product_image.image)
 
 
 def save_product_documents(product, document_urls):
