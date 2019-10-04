@@ -92,12 +92,11 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #     }
 # }
 UPLOAD_TO = 'epsi/'
-dbs = ['caplugsa_essentra', 'caplugsa_epsi']
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': dbs[1],
+        'NAME': 'caplugsa_epsi',
         'USER': 'caplugsa_admin',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
