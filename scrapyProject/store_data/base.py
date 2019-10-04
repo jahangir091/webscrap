@@ -134,6 +134,7 @@ def save_product_images(product, image_urls):
         product_image.title = product.name
         product_image.product = product
         file_name = url.split('/')[-1]
+        file_name = file_name.split('?')[0]
         #if file does not have any extention (like essectra) then use the following line
         #file_name = file_name.split('.')[0] + '.jpg'
         save_image_from_url(url, file_name, product_image.image)
