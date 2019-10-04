@@ -4,6 +4,7 @@ from time import sleep
 from selenium.webdriver.chrome.options import Options
 from django.conf import settings
 from selenium import webdriver
+from selenium.webdriver.support.ui import Select
 
 product_type_urls = [
     "https://www.echosupply.com/products/masking/plugs",
@@ -116,7 +117,7 @@ def get_product_info(browser):
         # import pdb; pdb.set_trace()
         variant_unit_price = tds[-3:-2][0].text.strip()
 
-        quantities.append(variant_unit_price.split('/')[1] if variant_unit_price else '0')
+        quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
         unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
         pricing['quantity'] = quantities
         pricing['unit_price'] = unit_prices
@@ -131,9 +132,24 @@ def get_product_info(browser):
             key = table_headers[i].text.strip()
             value = tds[i].text.strip()
             specifications[key] = value
+
+        option = browser.find_element_by_id('selectedUnits')
+        select = Select(option)
+        # import pdb; pdb.set_trace()
+        select.select_by_visible_text('Metric')
+        for i in range(len(table_headers)):
+            if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Unit Price'.lower(), 'Qty.'.lower()]:
+                continue
+            converted_spans = tds[i].find_elements_by_tag_name('span')
+
+            if converted_spans and converted_spans[0].get_attribute('class') == 'converted':
+                key = table_headers[i].text.strip()
+                value = tds[i].text.strip()
+                specifications[key] = value
+
         variant['specifications'] = specifications
+        select.select_by_visible_text('SAE')
         #-----------------------------------------------------------------------------------------------
 
         variants.append(variant)
     return variants, product_name, product_title, product_description, product_images, stock_status, meta
-
