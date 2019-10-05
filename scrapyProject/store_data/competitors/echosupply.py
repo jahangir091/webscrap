@@ -47,12 +47,12 @@ def load_echosupply_products():
 
         products_page = get_browser(url)
         print('wait 15 seconds')
-        sleep(10)
+        sleep(15)
         product_urls = get_product_urls(products_page)
         for product_url in product_urls:
             product_page = get_browser(product_url)
             print('wait 15 seconds')
-            sleep(10)
+            sleep(15)
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(product_page)
             product = create_product(product_name, product_title, product_description, product_images,
                                      product_stock_status, meta, product_type=product_type2)
@@ -64,6 +64,7 @@ def load_echosupply_products():
                 variant_count += 1
             print("loaded {0} variants of product {1}".format(variant_count, product.name))
             product_page.quit()
+        products_page.quit()
 
 
 def get_product_urls(browser):
@@ -120,18 +121,10 @@ def get_product_info(browser):
             variant['standard_pack'] = 0
             #----------------------------------------------------------------------------------------------
 
-            #---------------------------------variant pricing-----------------------------------------------
+            #---------------------------------variant pricing declaration----------------------------------
             pricing = {}
             quantities = []
             unit_prices = []
-            # import pdb; pdb.set_trace()
-            # variant_unit_price = tds[-3:-2][0].text.strip()
-            #
-            # quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
-            # unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
-            # pricing['quantity'] = quantities
-            # pricing['unit_price'] = unit_prices
-            # variant['pricing'] = pricing
             #----------------------------------------------------------------------------------------------
 
             #---------------------------specifications-----------------------------------------------------
@@ -139,6 +132,7 @@ def get_product_info(browser):
             for i in range(len(table_headers)):
                 if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Qty.'.lower()]:
                     continue
+                #-----------------------variant pricing implementation--------------------------------------
                 if table_headers[i].text.strip().lower() == 'Unit Price'.lower():
                     variant_unit_price = tds[i].text.strip()
                     quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
@@ -147,6 +141,8 @@ def get_product_info(browser):
                     pricing['unit_price'] = unit_prices
                     variant['pricing'] = pricing
                     continue
+                #---------------------------------------------------------------------------------------------
+
                 key = table_headers[i].text.strip()
                 value = tds[i].text.strip()
                 specifications[key] = value
