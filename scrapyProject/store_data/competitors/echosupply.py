@@ -84,7 +84,10 @@ def get_product_info(browser):
     product_title = product_name
     meta = browser.find_element_by_xpath('/html/head/meta[6]').get_attribute('content') if browser.find_element_by_xpath('/html/head/meta[6]') else ''
 
-    product_features = browser.find_element_by_class_name('product-features').find_elements_by_tag_name('li')
+    product_features_divs = browser.find_elements_by_class_name('product-features')
+    product_features = []
+    if product_features_divs:
+        product_features = product_features_divs[0].find_elements_by_tag_name('li')
     product_description = ''
     for feature in product_features:
         product_description += feature.text.strip()
@@ -120,19 +123,27 @@ def get_product_info(browser):
         quantities = []
         unit_prices = []
         # import pdb; pdb.set_trace()
-        variant_unit_price = tds[-3:-2][0].text.strip()
-
-        quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
-        unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
-        pricing['quantity'] = quantities
-        pricing['unit_price'] = unit_prices
-        variant['pricing'] = pricing
+        # variant_unit_price = tds[-3:-2][0].text.strip()
+        #
+        # quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
+        # unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
+        # pricing['quantity'] = quantities
+        # pricing['unit_price'] = unit_prices
+        # variant['pricing'] = pricing
         #----------------------------------------------------------------------------------------------
 
         #---------------------------specifications-----------------------------------------------------
         specifications = {}
         for i in range(len(table_headers)):
-            if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Unit Price'.lower(), 'Qty.'.lower()]:
+            if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Qty.'.lower()]:
+                continue
+            if table_headers[i].text.strip().lower() == 'Unit Price'.lower():
+                variant_unit_price = tds[i].text.strip()
+                quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
+                unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
+                pricing['quantity'] = quantities
+                pricing['unit_price'] = unit_prices
+                variant['pricing'] = pricing
                 continue
             key = table_headers[i].text.strip()
             value = tds[i].text.strip()
