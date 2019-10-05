@@ -31,7 +31,7 @@ def get_browser(url):
     # chrome_options.add_argument('--disable-dev-shm-usage')
     # browser = webdriver.Chrome( settings.BASE_DIR + '/chromedriver', chrome_options = chrome_options)
     firefox_options = FirefoxOptions()
-    firefox_options.headless = False
+    firefox_options.headless = True
     browser = webdriver.Firefox(firefox_options=firefox_options, executable_path=settings.BASE_DIR + '/geckodriver')
     browser.get(url)
     return browser
