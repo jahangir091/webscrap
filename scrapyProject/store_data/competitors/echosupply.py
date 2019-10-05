@@ -63,7 +63,7 @@ def load_echosupply_products():
                                          variant['standard_pack'], variant['pricing'], variant['specifications'])
                 variant_count += 1
             print("loaded {0} variants of product {1}".format(variant_count, product.name))
-            product_page.close()
+            product_page.quit()
 
 
 def get_product_urls(browser):
@@ -103,69 +103,71 @@ def get_product_info(browser):
 
     # fetch product variants
     variants = []
-    variants_table = browser.find_element_by_tag_name('table')
-    table_headers = variants_table.find_element_by_tag_name('thead').find_elements_by_tag_name('th')
-    table_rows = variants_table.find_element_by_tag_name('tbody').find_elements_by_tag_name('tr')
-    for table_row in table_rows:
-        #----------------------variant details-------------------------------------------------------
-        variant = {}
-        tds = table_row.find_elements_by_tag_name('td')
-        variant['title'] = product_title if product_title else ''
-        variant['descripiton'] = ''
-        variant['variant_images'] = []
-        variant['item_code'] = tds[0].text if tds else None
-        variant['availability'] = ''
-        variant['standard_pack'] = 0
-        #----------------------------------------------------------------------------------------------
+    variants_tables = browser.find_elements_by_tag_name('table')
+    if variants_tables:
+        variants_table = variants_tables[0]
+        table_headers = variants_table.find_element_by_tag_name('thead').find_elements_by_tag_name('th')
+        table_rows = variants_table.find_element_by_tag_name('tbody').find_elements_by_tag_name('tr')
+        for table_row in table_rows:
+            #----------------------variant details-------------------------------------------------------
+            variant = {}
+            tds = table_row.find_elements_by_tag_name('td')
+            variant['title'] = product_title if product_title else ''
+            variant['descripiton'] = ''
+            variant['variant_images'] = []
+            variant['item_code'] = tds[0].text if tds else None
+            variant['availability'] = ''
+            variant['standard_pack'] = 0
+            #----------------------------------------------------------------------------------------------
 
-        #---------------------------------variant pricing-----------------------------------------------
-        pricing = {}
-        quantities = []
-        unit_prices = []
-        # import pdb; pdb.set_trace()
-        # variant_unit_price = tds[-3:-2][0].text.strip()
-        #
-        # quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
-        # unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
-        # pricing['quantity'] = quantities
-        # pricing['unit_price'] = unit_prices
-        # variant['pricing'] = pricing
-        #----------------------------------------------------------------------------------------------
+            #---------------------------------variant pricing-----------------------------------------------
+            pricing = {}
+            quantities = []
+            unit_prices = []
+            # import pdb; pdb.set_trace()
+            # variant_unit_price = tds[-3:-2][0].text.strip()
+            #
+            # quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
+            # unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
+            # pricing['quantity'] = quantities
+            # pricing['unit_price'] = unit_prices
+            # variant['pricing'] = pricing
+            #----------------------------------------------------------------------------------------------
 
-        #---------------------------specifications-----------------------------------------------------
-        specifications = {}
-        for i in range(len(table_headers)):
-            if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Qty.'.lower()]:
-                continue
-            if table_headers[i].text.strip().lower() == 'Unit Price'.lower():
-                variant_unit_price = tds[i].text.strip()
-                quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
-                unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
-                pricing['quantity'] = quantities
-                pricing['unit_price'] = unit_prices
-                variant['pricing'] = pricing
-                continue
-            key = table_headers[i].text.strip()
-            value = tds[i].text.strip()
-            specifications[key] = value
-
-        option = browser.find_element_by_id('selectedUnits')
-        select = Select(option)
-        # import pdb; pdb.set_trace()
-        select.select_by_visible_text('Metric')
-        for i in range(len(table_headers)):
-            if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Unit Price'.lower(), 'Qty.'.lower()]:
-                continue
-            converted_spans = tds[i].find_elements_by_tag_name('span')
-
-            if converted_spans and converted_spans[0].get_attribute('class') == 'converted':
+            #---------------------------specifications-----------------------------------------------------
+            specifications = {}
+            for i in range(len(table_headers)):
+                if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Qty.'.lower()]:
+                    continue
+                if table_headers[i].text.strip().lower() == 'Unit Price'.lower():
+                    variant_unit_price = tds[i].text.strip()
+                    quantities.append(variant_unit_price.split('/')[1].strip() if variant_unit_price else '0')
+                    unit_prices.append(variant_unit_price.split('/')[0].strip() if variant_unit_price else '0')
+                    pricing['quantity'] = quantities
+                    pricing['unit_price'] = unit_prices
+                    variant['pricing'] = pricing
+                    continue
                 key = table_headers[i].text.strip()
                 value = tds[i].text.strip()
                 specifications[key] = value
 
-        variant['specifications'] = specifications
-        select.select_by_visible_text('SAE')
-        #-----------------------------------------------------------------------------------------------
+            option = browser.find_element_by_id('selectedUnits')
+            select = Select(option)
+            # import pdb; pdb.set_trace()
+            select.select_by_visible_text('Metric')
+            for i in range(len(table_headers)):
+                if table_headers[i].text.strip().lower() in ['Part Number'.lower(), 'Unit Price'.lower(), 'Qty.'.lower()]:
+                    continue
+                converted_spans = tds[i].find_elements_by_tag_name('span')
 
-        variants.append(variant)
+                if converted_spans and converted_spans[0].get_attribute('class') == 'converted':
+                    key = table_headers[i].text.strip()
+                    value = tds[i].text.strip()
+                    specifications[key] = value
+
+            variant['specifications'] = specifications
+            select.select_by_visible_text('SAE')
+            #-----------------------------------------------------------------------------------------------
+
+            variants.append(variant)
     return variants, product_name, product_title, product_description, product_images, stock_status, meta
