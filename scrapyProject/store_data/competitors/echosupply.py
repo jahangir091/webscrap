@@ -1,7 +1,8 @@
 from store_data.base import create_competitor, create_product_type, create_product, create_variant, get_response
 from store_data.base import get_soup
 from time import sleep
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOPtions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
@@ -24,11 +25,14 @@ base_url = 'https://www.echosupply.com'
 
 def get_browser(url):
     print('connecting >> {0}'.format(url))
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    browser = webdriver.Chrome( settings.BASE_DIR + '/chromedriver', chrome_options = chrome_options)
+    # chrome_options = Options()
+    # chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--no-sandbox')
+    # chrome_options.add_argument('--disable-dev-shm-usage')
+    # browser = webdriver.Chrome( settings.BASE_DIR + '/chromedriver', chrome_options = chrome_options)
+    firefox_options = FirefoxOptions()
+    firefox_options.headless = False
+    browser = webdriver.Firefox(firefox_options=firefox_options, executable_path=settings.BASE_DIR + '/geckodriver')
     browser.get(url)
     return browser
 
@@ -42,13 +46,13 @@ def load_echosupply_products():
         product_type2 = create_product_type(competitor, product_type2_name, None, '', product_type1)
 
         products_page = get_browser(url)
-        print('wait 5 seconds')
-        sleep(5)
+        print('wait 15 seconds')
+        sleep(10)
         product_urls = get_product_urls(products_page)
         for product_url in product_urls:
             product_page = get_browser(product_url)
-            print('wait 5 seconds')
-            sleep(5)
+            print('wait 15 seconds')
+            sleep(10)
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(product_page)
             product = create_product(product_name, product_title, product_description, product_images,
                                      product_stock_status, meta, product_type=product_type2)
@@ -59,6 +63,7 @@ def load_echosupply_products():
                                          variant['standard_pack'], variant['pricing'], variant['specifications'])
                 variant_count += 1
             print("loaded {0} variants of product {1}".format(variant_count, product.name))
+            product_page.close()
 
 
 def get_product_urls(browser):
