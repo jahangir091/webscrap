@@ -11,5 +11,6 @@ django-autoslug==1.9.6
 jsonfield
 pyOpenSSL
 #django_extensions
-mysqlclient
+#mysqlclient
 selenium
+psycopg2
