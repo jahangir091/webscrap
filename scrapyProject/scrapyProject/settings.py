@@ -91,17 +91,16 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'PORT': '3306',
 #     }
 # }
-UPLOAD_TO = 'epsi/'
-dbs = ['caplugsa_essentra', 'caplugsa_epsi']
+UPLOAD_TO = 'mocap/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': dbs[1],
-        'USER': 'caplugsa_admin',
-        'PASSWORD': 'admin',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mocap',
+        'USER': 'webscraping',
+        'PASSWORD': 'webscraping',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '5432',
     }
 }
 
