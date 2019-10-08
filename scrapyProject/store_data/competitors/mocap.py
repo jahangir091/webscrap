@@ -19,7 +19,6 @@ def get_browser(url):
 
     browser = webdriver.Chrome( settings.BASE_DIR + '/chromedriver', chrome_options = chrome_options)
     browser.get(url)
-
     return browser
 
 

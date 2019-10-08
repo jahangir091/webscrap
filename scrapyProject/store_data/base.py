@@ -9,6 +9,10 @@ from django.core import files
 from store_data.models import Competitor, ProductType, Product, Variant, ProductImage, VariantImage, Specification, Pricing
 from store_data.models import ProductDocument
 
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from django.conf import settings
+from selenium import webdriver
+
 
 def create_competitor(comperitor_name, url):
     competitor, created = Competitor.objects.get_or_create(name=comperitor_name)
@@ -161,3 +165,16 @@ def get_soup(response):
     html_page = response.text
     page_soup = soup(html_page, 'html.parser')
     return page_soup
+
+def get_browser(url):
+    print('connecting >> {0}'.format(url))
+    # chrome_options = Options()
+    # chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--no-sandbox')
+    # chrome_options.add_argument('--disable-dev-shm-usage')
+    # browser = webdriver.Chrome( settings.BASE_DIR + '/chromedriver', chrome_options = chrome_options)
+    firefox_options = FirefoxOptions()
+    firefox_options.headless = True
+    browser = webdriver.Firefox(firefox_options=firefox_options, executable_path=settings.BASE_DIR + '/geckodriver')
+    browser.get(url)
+    return browser
