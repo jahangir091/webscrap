@@ -21,8 +21,10 @@ def load_mocap_products():
     #import pdb; pdb.set_trace()
     competitor = create_competitor(competitor_name, base_url)
     product_urls = get_products_urls_list(ALL_MOCAP_PRODUCTS_URL)
+    product_counter = 1
     for product_url in product_urls:
-        print('>>>Product: {0}'.format(product_url))
+        print('>>>Product No-{0}: {1}'.format(product_counter, product_url))
+        product_counter += 1
         product_type_urls, variant_urls, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(product_url)
         flag = True
         product_type = None
