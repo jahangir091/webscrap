@@ -1,6 +1,7 @@
 import requests
 import tempfile
 import re
+from time import sleep
 
 from bs4 import BeautifulSoup as soup
 
@@ -23,10 +24,10 @@ def create_competitor(comperitor_name, url):
 
 
 def create_product_type(competitor, name, image_url, description, parent=None):
-    product_type = ProductType()
-    product_type.competitor = competitor
-    product_type.name = name
-    product_type.description = description
+    product_type, created = ProductType.objects.get_or_create(name=name, competitor=competitor)
+    if created:
+        product_type.name = name
+        product_type.description = description
     if image_url:
         save_image_from_url(image_url, product_type.image)
     if parent:
@@ -76,8 +77,8 @@ def create_variant(product, v_title, v_descripiton, v_images, v_item_code, v_ava
         pricing.unitPprice = primary_string.replace(',','')
         pricing.variant = variant
         pricing.save()
-    if v_images:
-        save_variant_images(variant, v_images)
+    #if v_images:
+    #    save_variant_images(variant, v_images)
     return  variant
 
 
@@ -158,13 +159,15 @@ def save_variant_images(variant, image_urls):
         variant_image = VariantImage()
         variant_image.title = variant.title
         variant_image.variant = variant
-        save_image_from_url(url, variant_image.image)
+        file_name = url.split('/')[-1]
+        save_image_from_url(url, file_name, variant_image.image)
 
 
 def get_soup(response):
     html_page = response.text
     page_soup = soup(html_page, 'html.parser')
     return page_soup
+
 
 def get_browser(url):
     print('connecting >> {0}'.format(url))
@@ -177,4 +180,16 @@ def get_browser(url):
     firefox_options.headless = True
     browser = webdriver.Firefox(firefox_options=firefox_options, executable_path=settings.BASE_DIR + '/geckodriver')
     browser.get(url)
+    print("Please wait 5 seconds")
+    sleep(5)
     return browser
+
+
+def save_svg_diagram(variant, svg_code):
+    variant_image = VariantImage()
+    variant_image.title = variant.title
+    variant_image.variant = variant
+    file_name = variant.title + 'svg'
+    temp_file = tempfile.NamedTemporaryFile(suffix='.svg')
+    temp_file.write(svg_code)
+    variant_image.image.save(file_name, files.File(temp_file))
