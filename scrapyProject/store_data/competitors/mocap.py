@@ -18,13 +18,12 @@ base_url = 'https://www.mocap.com'
 
 
 def load_mocap_products():
-    import pdb; pdb.set_trace()
     competitor = create_competitor(competitor_name, base_url)
     product_urls = get_products_urls_list(ALL_MOCAP_PRODUCTS_URL)
     product_counter = 0
     for product_url in product_urls:
         product_counter += 1
-        if product_counter <= 24:
+        if product_counter <= 58:
             continue
         print('>>>Product No-{0}: {1}'.format(product_counter, product_url))
         product_type_urls, variant_urls, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(product_url)
@@ -97,14 +96,18 @@ def get_product_info(url):
         product_images.append(resized_image_src)
 
     variant_links = []
-    variants_table = browser.find_element_by_id('SZCHARTID') if browser.find_element_by_id('SZCHARTID') else None
-    table_row_elements = variants_table.find_elements_by_tag_name('tr') if variants_table else None
-    if table_row_elements:
-        for tr in table_row_elements[1:-1]:
-            variant_link_tags = tr.find_elements_by_class_name('crtlnk')
-            if variant_link_tags:
-                variant_link = variant_link_tags[0].get_attribute('href')
-                variant_links.append(variant_link)
+    try:
+        variants_table = browser.find_element_by_id('SZCHARTID') if browser.find_element_by_id('SZCHARTID') else None
+    except Exception as e:
+        pass
+    else:
+        table_row_elements = variants_table.find_elements_by_tag_name('tr') if variants_table else None
+        if table_row_elements:
+            for tr in table_row_elements[1:-1]:
+                variant_link_tags = tr.find_elements_by_class_name('crtlnk')
+                if variant_link_tags:
+                    variant_link = variant_link_tags[0].get_attribute('href')
+                    variant_links.append(variant_link)
 
     browser.quit()
     return product_type_urls, variant_links, product_name, product_title, product_description, product_images, stock_status, meta
