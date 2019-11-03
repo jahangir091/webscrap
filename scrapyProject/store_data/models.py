@@ -10,7 +10,7 @@ class Competitor(models.Model):
     """
 
     """
-    name = models.CharField(max_length=250, verbose_name=_('manufacturer name'), help_text=_('name of a competitor'))
+    name = models.CharField(max_length=2000, verbose_name=_('manufacturer name'), help_text=_('name of a competitor'))
     url = models.URLField(max_length=2000, null=True, blank=True, verbose_name=_('competitor url'),
                           help_text=_('base url of a competitor'))
     slug = AutoSlugField(max_length=30, populate_from='name', unique=True)
@@ -32,9 +32,9 @@ class ProductType(models.Model):
     """
     parent = models.ForeignKey('self', blank=True, null=True, related_name='childrens', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='product_types', on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=2000, blank=True, null=True)
     slug = AutoSlugField(max_length=30, unique=True,populate_from='name')
-    image_location = models.CharField(max_length=1000, blank=True, null=True)
+    image_location = models.CharField(max_length=2000, blank=True, null=True)
     image = models.ImageField(upload_to=uploadto + 'product_types', blank=True, null=True)
     description = models.CharField(max_length=15000, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -56,16 +56,16 @@ class Product(models.Model):
     """
 
     """
-    name = models.CharField(max_length=50, blank=True, null=True)
-    title = models.CharField(max_length=50, blank=True, null=True)
-    meta = models.CharField(max_length=500, blank=True, null=True)
+    name = models.CharField(max_length=2000, blank=True, null=True)
+    title = models.CharField(max_length=2000, blank=True, null=True)
+    meta = models.CharField(max_length=2000, blank=True, null=True)
     slug = AutoSlugField(max_length=30, unique=True, populate_from='name')
     product_type = models.ForeignKey(ProductType, related_name='products', on_delete=models.CASCADE)
     short_description = models.CharField(max_length=20000, blank=True, null=True)
     description = models.CharField(max_length=20000, blank=True, null=True)
     url = models.URLField(max_length=2000, null=True, blank=True, verbose_name=_('product url'),
                           help_text=_('base url of a competitor'))
-    stock_status = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('stock status'), help_text=_('stock status of this product'))
+    stock_status = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('stock status'), help_text=_('stock status of this product'))
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -81,7 +81,7 @@ class ProductImage(models.Model):
     """
 
     """
-    title = models.CharField(max_length=50, blank=True, null=True)
+    title = models.CharField(max_length=2000, blank=True, null=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=uploadto + 'products')
     date_created = models.DateTimeField(auto_now_add=True)
@@ -92,12 +92,12 @@ class Variant(models.Model):
     """
 
     """
-    title = models.CharField(max_length=300, blank=True, null=True)
-    slug = AutoSlugField(max_length=30, unique=True, populate_from='title')
+    title = models.CharField(max_length=2000, blank=True, null=True)
+    slug = AutoSlugField(max_length=2000, unique=True, populate_from='title')
     description = models.CharField(max_length=20000, blank=True, null=True)
     product = models.ForeignKey(Product, verbose_name=_('product'), help_text=_('product name of this variant'), on_delete=models.CASCADE, related_name='variants')
-    item_code = models.CharField(max_length=30, blank=True, null=True)
-    availability = models.CharField(max_length=50, blank=True, null=True, help_text=_('availability of this product'))
+    item_code = models.CharField(max_length=200, blank=True, null=True)
+    availability = models.CharField(max_length=200, blank=True, null=True, help_text=_('availability of this product'))
     standard_pack_size = models.IntegerField(blank=True, default=0, help_text =_('number of items in a pack'))
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -114,7 +114,7 @@ class VariantImage(models.Model):
     """
 
     """
-    title = models.CharField(max_length=50, blank=True, null=True)
+    title = models.CharField(max_length=2000, blank=True, null=True)
     variant = models.ForeignKey(Variant, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=uploadto + 'variants')
     date_created = models.DateTimeField(auto_now_add=True)
@@ -125,7 +125,7 @@ class Specification(models.Model):
     """
 
     """
-    name = models.CharField(max_length=150, blank=True, null=True)
+    name = models.CharField(max_length=2000, blank=True, null=True)
     value = models.CharField(max_length=300, blank=True, null=True)
     variant = models.ForeignKey(Variant, related_name='specifications', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -139,7 +139,7 @@ class Pricing(models.Model):
     """
 
     """
-    quantity = models.CharField(max_length=30, blank=True, null=True)
+    quantity = models.CharField(max_length=300, blank=True, null=True)
     unitPprice = models.DecimalField(max_digits=20, decimal_places=4)
     variant = models.ForeignKey(Variant, related_name='pricing', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -153,7 +153,7 @@ class ProductDocument(models.Model):
     """
 
     """
-    title = models.CharField(max_length=50, blank=True, null=True)
+    title = models.CharField(max_length=2000, blank=True, null=True)
     product = models.ForeignKey(Product, related_name='documents', on_delete=models.CASCADE)
     document = models.FileField(upload_to=uploadto + 'documents') #ImageField(upload_to=uploadto + 'variants')
     date_created = models.DateTimeField(auto_now_add=True)
