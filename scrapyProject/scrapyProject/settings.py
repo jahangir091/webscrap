@@ -91,12 +91,12 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'PORT': '3306',
 #     }
 # }
-UPLOAD_TO = 'epsi/'
+UPLOAD_TO = 'epsi_catalog/'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'caplugsa_epsi',
+        'NAME': 'caplugsa_epsi_catalog',
         'USER': 'caplugsa_admin',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
