@@ -32,11 +32,11 @@ class ProductType(models.Model):
     """
     parent = models.ForeignKey('self', blank=True, null=True, related_name='childrens', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='product_types', on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, blank=True, null=True)
-    slug = AutoSlugField(max_length=30, unique=True,populate_from='name')
+    name = models.CharField(max_length=500, blank=True, null=True)
+    slug = AutoSlugField(max_length=500, unique=True,populate_from='name')
     image_location = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField(upload_to=uploadto + 'product_types', blank=True, null=True)
-    description = models.CharField(max_length=1500, blank=True, null=True)
+    description = models.CharField(max_length=15000, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -56,13 +56,13 @@ class Product(models.Model):
     """
 
     """
-    name = models.CharField(max_length=50, blank=True, null=True)
-    title = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=500, blank=True, null=True)
+    title = models.CharField(max_length=500, blank=True, null=True)
     meta = models.CharField(max_length=500, blank=True, null=True)
-    slug = AutoSlugField(max_length=30, unique=True, populate_from='name')
+    slug = AutoSlugField(max_length=500, unique=True, populate_from='name')
     product_type = models.ForeignKey(ProductType, related_name='products', on_delete=models.CASCADE)
-    short_description = models.CharField(max_length=200, blank=True, null=True)
-    description = models.CharField(max_length=1000, blank=True, null=True)
+    short_description = models.CharField(max_length=20000, blank=True, null=True)
+    description = models.CharField(max_length=20000, blank=True, null=True)
     url = models.URLField(max_length=2000, null=True, blank=True, verbose_name=_('product url'),
                           help_text=_('base url of a competitor'))
     stock_status = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('stock status'), help_text=_('stock status of this product'))
@@ -92,12 +92,12 @@ class Variant(models.Model):
     """
 
     """
-    title = models.CharField(max_length=300, blank=True, null=True)
-    slug = AutoSlugField(max_length=30, unique=True, populate_from='title')
-    description = models.CharField(max_length=2000, blank=True, null=True)
+    title = models.CharField(max_length=500, blank=True, null=True)
+    slug = AutoSlugField(max_length=500, unique=True, populate_from='title')
+    description = models.CharField(max_length=20000, blank=True, null=True)
     product = models.ForeignKey(Product, verbose_name=_('product'), help_text=_('product name of this variant'), on_delete=models.CASCADE, related_name='variants')
     item_code = models.CharField(max_length=30, blank=True, null=True)
-    availability = models.CharField(max_length=50, blank=True, null=True, help_text=_('availability of this product'))
+    availability = models.CharField(max_length=500, blank=True, null=True, help_text=_('availability of this product'))
     standard_pack_size = models.IntegerField(blank=True, default=0, help_text =_('number of items in a pack'))
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
