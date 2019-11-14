@@ -33,7 +33,7 @@ class ProductType(models.Model):
     parent = models.ForeignKey('self', blank=True, null=True, related_name='childrens', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='product_types', on_delete=models.CASCADE)
     name = models.CharField(max_length=500, blank=True, null=True)
-    slug = AutoSlugField(max_length=500, unique=True,populate_from='name')
+    slug = AutoSlugField(max_length=250, unique=True,populate_from='name')
     image_location = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField(upload_to=uploadto + 'product_types', blank=True, null=True)
     description = models.CharField(max_length=15000, blank=True, null=True)
@@ -59,7 +59,7 @@ class Product(models.Model):
     name = models.CharField(max_length=500, blank=True, null=True)
     title = models.CharField(max_length=500, blank=True, null=True)
     meta = models.CharField(max_length=500, blank=True, null=True)
-    slug = AutoSlugField(max_length=500, unique=True, populate_from='name')
+    slug = AutoSlugField(max_length=250, unique=True, populate_from='name')
     product_type = models.ForeignKey(ProductType, related_name='products', on_delete=models.CASCADE)
     short_description = models.CharField(max_length=20000, blank=True, null=True)
     description = models.CharField(max_length=20000, blank=True, null=True)
@@ -94,7 +94,7 @@ class Variant(models.Model):
 
     """
     title = models.CharField(max_length=500, blank=True, null=True)
-    slug = AutoSlugField(max_length=500, unique=True, populate_from='title')
+    slug = AutoSlugField(max_length=250, unique=True, populate_from='title')
     description = models.CharField(max_length=20000, blank=True, null=True)
     product = models.ForeignKey(Product, verbose_name=_('product'), help_text=_('product name of this variant'), on_delete=models.CASCADE, related_name='variants')
     item_code = models.CharField(max_length=30, blank=True, null=True)
