@@ -1,5 +1,5 @@
 from django import forms
-from store_data.models import ProductType
+from store_data.models import Competitor, ProductType, ProductImage
 from django.utils.translation import ugettext_lazy as _
 
 product_types = ProductType.objects.all()

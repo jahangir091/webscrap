@@ -63,6 +63,7 @@ class Product(models.Model):
     product_type = models.ForeignKey(ProductType, related_name='products', on_delete=models.CASCADE)
     short_description = models.CharField(max_length=20000, blank=True, null=True)
     description = models.CharField(max_length=20000, blank=True, null=True)
+    helpful_hints = models.CharField(max_length=15000, blank=True, null=True)
     url = models.URLField(max_length=2000, null=True, blank=True, verbose_name=_('product url'),
                           help_text=_('base url of a competitor'))
     stock_status = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('stock status'), help_text=_('stock status of this product'))
