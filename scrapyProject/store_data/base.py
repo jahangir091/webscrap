@@ -70,13 +70,14 @@ def create_variant(product, v_title, v_descripiton, v_images, v_item_code, v_ava
         spec.value = value
         spec.variant = variant
         spec.save()
-    for i in range(len(v_pricing['quantity'])):
-        pricing = Pricing()
-        pricing.quantity = v_pricing['quantity'][i]
-        primary_string = re.sub('\$', '', v_pricing['unit_price'][i])
-        pricing.unitPprice = primary_string.replace(',','')
-        pricing.variant = variant
-        pricing.save()
+    if v_pricing:
+        for i in range(len(v_pricing['quantity'])):
+            pricing = Pricing()
+            pricing.quantity = v_pricing['quantity'][i]
+            primary_string = re.sub('\$', '', v_pricing['unit_price'][i])
+            pricing.unitPprice = primary_string.replace(',','')
+            pricing.variant = variant
+            pricing.save()
     #if v_images:
     #    save_variant_images(variant, v_images)
     return  variant
