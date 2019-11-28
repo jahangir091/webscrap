@@ -35,7 +35,7 @@ def create_product_type(competitor, name, image_url, description, parent=None):
     product_type.save()
     return product_type
 
-def create_product(product_name, product_title, product_description, product_images, product_in_stock, meta, product_type=None, product_documents=None):
+def create_product(product_name, product_title, product_description, product_images, product_in_stock, meta, url=None, product_type=None, product_documents=None):
     product = Product()
     product.name = product_name
     if not product_type:
@@ -46,6 +46,8 @@ def create_product(product_name, product_title, product_description, product_ima
     product.description = product_description
     product.stock_status = product_in_stock
     product.meta = meta
+    if url:
+        product.url = url
     product.save()
     if product_images:
         save_product_images(product, product_images)

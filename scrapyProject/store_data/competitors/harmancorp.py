@@ -30,7 +30,7 @@ def load_harmancorp_products():
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(
                 product_url)
             product = create_product(product_name, product_title, product_description, product_images,
-                                     product_stock_status, meta, product_type=product_type)
+                                     product_stock_status, meta, product_url, product_type=product_type)
             variant_count = 0
             print("Loading product {0}-->{1}".format(product_type, product))
             for variant in variants:
