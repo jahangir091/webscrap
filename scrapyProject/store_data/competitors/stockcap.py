@@ -17,7 +17,10 @@ product_type_urls = [
     'https://www.stockcap.com/store/plugs.html',
     'https://www.stockcap.com/store/tubing-tapes-more.html'
     ]
-
+done_urls = ['https://www.stockcap.com/store/short-caps.html',
+             'https://www.stockcap.com/store/long-caps.html',
+             'https://www.stockcap.com/store/rectangular-caps.html'
+             ]
 
 
 def load_stockcap_products():
@@ -28,6 +31,8 @@ def load_stockcap_products():
         response = get_response(url)
         product_urls = get_product_urls(response)
         for product_url in product_urls:
+            if product_url in done_urls:
+                continue
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(
                 product_url)
             product = create_product(product_name, product_title, product_description, product_images,
@@ -88,10 +93,11 @@ def get_product_info(url):
         variant_table_div = browser.find_elements_by_class_name('subcategory-descr')[0]
         if variant_table_div:
             variant_tables = variant_table_div.find_elements_by_tag_name('table')
-            if variant_tables:
-                variant_table = variant_tables[0]
-                if variant_table:
-                    variants = get_variants(variant_table)
+            for table in variant_tables:
+                if table.get_attribute('border') == '1':
+                    variant_table = table
+            if variant_table:
+                variants = get_variants(variant_table)
 
     browser.quit()
     return variants, product_name, product_title, product_description, product_images, stock_status, meta
