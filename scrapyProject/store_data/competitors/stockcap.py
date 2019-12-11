@@ -142,6 +142,7 @@ def get_variant_details(url):
     response1 = get_response(url)
     browser = get_browser(response1.url)
     variant = {}
+    variant['item_code'] = ''
 
     title = browser.find_elements_by_id("rightText")
     if title:
@@ -247,10 +248,10 @@ def get_variants(variant_table):
         pricing['unit_price'] = unit_prices
         variant['pricing'] = pricing
         variant['standard_pack'] = 0
+        variant['item_code'] = ''
         spec_cols = row.find_elements_by_tag_name('td')
         i = 0
         for col in spec_cols:
-            variant['item_code'] = ''
             if variant_table_headers[i].text.strip().lower() == 'part number':
                 variant['item_code'] = col.text.strip()
             else:
