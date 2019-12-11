@@ -78,7 +78,6 @@ def get_product_info(url):
         select_tag = select_tags[0]
         attr_name = select_tag.get_attribute('name')
 
-    import pdb; pdb.set_trace()
     if browser.find_elements_by_id('scrollbar2'):
         variant_table_div = browser.find_elements_by_id('scrollbar2')[0]
         if variant_table_div:
