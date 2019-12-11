@@ -58,6 +58,8 @@ def create_product(product_name, product_title, product_description, product_ima
 
 def create_variant(product, v_title, v_descripiton, v_images, v_item_code, v_availability, v_standard_pack, v_pricing, v_specifications):
     variant = Variant()
+    if not v_title:
+        v_title = "variant of " + product.title
     variant.title = v_title
     variant.product = product
     variant.description = v_descripiton
