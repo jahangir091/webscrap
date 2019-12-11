@@ -91,19 +91,18 @@ WSGI_APPLICATION = 'scrapyProject.wsgi.application'
 #         'PORT': '3306',
 #     }
 # }
-UPLOAD_TO = 'harmancorp/'
+UPLOAD_TO = 'stockcap/'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'harmancorp',
+        'NAME': 'stockcap',
         'USER': 'webscraping',
         'PASSWORD': 'webscraping',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
 
 
 
