@@ -143,6 +143,10 @@ def get_variant_details(url):
     browser = get_browser(response1.url)
     variant = {}
     variant['item_code'] = ''
+    variant['availability'] = ''
+    variant['specifications'] = {}
+    variant['standard_pack'] = 0
+    variant['pricing'] = {}
 
     title = browser.find_elements_by_id("rightText")
     if title:
