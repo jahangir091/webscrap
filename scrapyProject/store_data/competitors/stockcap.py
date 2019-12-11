@@ -14,12 +14,13 @@ base_url = 'https://www.stockcap.com'
 
 product_type_urls = [
     'https://www.stockcap.com/store/caps.html',
-    'https://www.stockcap.com/store/plugs.html',
-    'https://www.stockcap.com/store/tubing-tapes-more.html'
+    #'https://www.stockcap.com/store/plugs.html',
+    #'https://www.stockcap.com/store/tubing-tapes-more.html'
     ]
 done_urls = ['https://www.stockcap.com/store/short-caps.html',
              'https://www.stockcap.com/store/long-caps.html',
-             'https://www.stockcap.com/store/rectangular-caps.html'
+             'https://www.stockcap.com/store/rectangular-caps.html',
+             'https://www.stockcap.com/store/square-caps.html'
              ]
 
 
@@ -70,6 +71,14 @@ def get_product_info(url):
     product_description = get_product_description(browser)
 
     variants = []
+
+    select_tags = browser.find_elements_by_tag_name('select')
+    attr_name = ''
+    if select_tags:
+        select_tag = select_tags[0]
+        attr_name = select_tag.get_attribute('name')
+
+    import pdb; pdb.set_trace()
     if browser.find_elements_by_id('scrollbar2'):
         variant_table_div = browser.find_elements_by_id('scrollbar2')[0]
         if variant_table_div:
@@ -84,7 +93,7 @@ def get_product_info(url):
                     variant_url = base_url + '/store/' + 'product.php?productid=' + quantity_value
                     variant = get_variant_details(variant_url)
                     variants.append(variant)
-    elif browser.find_elements_by_id('scrollbar1'):
+    elif 'efield' in attr_name:
         variant_urls = get_variant_urls(browser)
         for variant_url in variant_urls:
             variant = get_variant_details(variant_url)
@@ -96,8 +105,7 @@ def get_product_info(url):
             for table in variant_tables:
                 if table.get_attribute('border') == '1':
                     variant_table = table
-            if variant_table:
-                variants = get_variants(variant_table)
+                    variants = get_variants(variant_table)
 
     browser.quit()
     return variants, product_name, product_title, product_description, product_images, stock_status, meta
