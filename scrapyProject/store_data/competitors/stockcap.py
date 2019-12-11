@@ -186,7 +186,9 @@ def get_variant_details(url):
                     variant['pricing'] = pricing
                 elif spec_cols[0].text.strip().lower() == 'pkg quantity:':
                     pack = spec_cols[1].text
-                    pack = pack.split('/')
+                    import re
+                    pack = re.split('/| ', pack)
+                    # pack = pack.split('/')
                     if pack:
                         pack = pack[0].strip()
                         variant['standard_pack'] = int(pack)
