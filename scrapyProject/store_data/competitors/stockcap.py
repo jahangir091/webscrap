@@ -31,8 +31,11 @@ def load_stockcap_products():
         product_type = create_product_type(competitor, product_type_name, None, '')
         response = get_response(url)
         product_urls = get_product_urls(response)
+        flag = 0
         for product_url in product_urls:
-            if product_url in done_urls:
+            if product_url == 'https://www.stockcap.com/store/angle-caps.html':
+                flag = 1
+            if flag == 0:
                 continue
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(
                 product_url)
@@ -55,6 +58,8 @@ def get_product_urls(response):
     product_urls = []
     for product in product_divs:
         product_url = product.a['href']
+        if 'https://www.stockcap.com' not in product_url:
+            product_url = 'https://www.stockcap.com' + product_url
         product_urls.append(product_url)
 
     return product_urls
