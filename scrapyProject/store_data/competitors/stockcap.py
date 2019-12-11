@@ -211,8 +211,8 @@ def get_variant_urls(browser):
         for select1_option_tag in select1_option_tags[1:-1]:
             select1_option_visible_text = select1_option_tag.text.strip()
             select1.select_by_visible_text(select1_option_visible_text)
-            sleep(1)
-            # print(select1_option_visible_text)
+            sleep(2)
+            print(select1_option_visible_text)
 
             select2_option_tags = select_element2.find_elements_by_tag_name('option')
             if len(select2_option_tags) >2:
