@@ -33,7 +33,7 @@ def load_stockcap_products():
         product_urls = get_product_urls(response)
         flag = 0
         for product_url in product_urls:
-            if product_url == 'https://www.stockcap.com/store/angle-caps.html':
+            if product_url == 'https://www.stockcap.com/store/vinyl-plus-plugs.html':
                 flag = 1
             if flag == 0:
                 continue
