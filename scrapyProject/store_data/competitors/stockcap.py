@@ -14,15 +14,9 @@ base_url = 'https://www.stockcap.com'
 
 product_type_urls = [
     'https://www.stockcap.com/store/caps.html',
-    #'https://www.stockcap.com/store/plugs.html',
-    #'https://www.stockcap.com/store/tubing-tapes-more.html'
+    'https://www.stockcap.com/store/plugs.html',
+    'https://www.stockcap.com/store/tubing-tapes-more.html'
     ]
-done_urls = ['https://www.stockcap.com/store/short-caps.html',
-             'https://www.stockcap.com/store/long-caps.html',
-             'https://www.stockcap.com/store/rectangular-caps.html',
-             'https://www.stockcap.com/store/square-caps.html'
-             ]
-
 
 def load_stockcap_products():
     competitor = create_competitor(competitor_name, base_url)
@@ -33,10 +27,10 @@ def load_stockcap_products():
         product_urls = get_product_urls(response)
         flag = 0
         for product_url in product_urls:
-            if product_url == 'https://www.stockcap.com/store/vinyl-plus-plugs.html':
-                flag = 1
-            if flag == 0:
-                continue
+            # if product_url == 'https://www.stockcap.com/store/vinyl-plus-plugs.html':
+            #     flag = 1
+            # if flag == 0:
+            #     continue
             variants, product_name, product_title, product_description, product_images, product_stock_status, meta = get_product_info(
                 product_url)
             product = create_product(product_name, product_title, product_description, product_images,
